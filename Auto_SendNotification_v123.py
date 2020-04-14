@@ -1,8 +1,9 @@
 from pysnmp.hlapi import *
 from pysnmp.hlapi.asyncore import *
 
+
+#SEnd Notification v1y2
 #Instancia dedicada a snmpEngine
-#sadasasv test
 snmpEngine = SnmpEngine()
 
 #Primer MENSAJE A ENVIAR
