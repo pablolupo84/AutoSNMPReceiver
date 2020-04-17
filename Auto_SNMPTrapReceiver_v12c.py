@@ -7,6 +7,7 @@ from pysnmp.entity.rfc3413 import ntfrcv
 import os,sys
 from datetime import datetime
 from clases import clase_config
+from clases import clase_logFile
 
 OID_reference = {
     '1.3.6.1.6.3.1.1.5.0':'hwLoadAndBackupTrapsOID',
@@ -25,6 +26,25 @@ OID_reference = {
 }
 
 
+# Callback function for receiving notifications
+# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
+def cbFun(snmpEngine, stateReference, contextEngineId, contextName,varBinds, cbCtx):
+    print('{} : Received new Trap message'.format(datetime.now()));
+    print('{} : Notification from ContextEngineId: {}, ContextName: {}'.format(datetime.now(),contextEngineId.prettyPrint(),
+                                                                        contextName.prettyPrint()))
+    for name, val in varBinds:
+        name_OID=name.prettyPrint()
+        value_OID=val.prettyPrint()    
+        if (OID_reference.get(name.prettyPrint())!=None):
+            name_OID=OID_reference.get(name.prettyPrint())
+        if (OID_reference.get(val.prettyPrint())!=None):
+            value_OID=OID_reference.get(val.prettyPrint())
+        
+        print('{} : Name: {} | Val: {}'.format(datetime.now(),name_OID,value_OID))
+
+        print('--------------------------------------------------------------------------');
+
+
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher
 snmpEngine = engine.SnmpEngine()
@@ -32,8 +52,14 @@ snmpEngine = engine.SnmpEngine()
 # Transport setup
 TrapAgentAddress='127.0.0.1'; #Trap listerner address
 Port=162;  #trap listerner port
+PATH_LOG="snmtp_log.txt"
+
+#Se crea la instancia logApp con el path de archivo de logs
+ErrorLog=clase_logFile.logApp(PATH_LOG)
 
 print('\n{} Iniciando Auto_SNMPTrapReceiver'.format(datetime.now()));
+ErrorLog.writeLog('Iniciando Auto_SNMPTrapReceiver')
+
 
 try:
     # UDP over IPv4, first listening interface/port
@@ -55,6 +81,7 @@ try:
 
 except Exception as err:
     print("Error: {}".format(err))
+    ErrorLog.writeLog('Error: ' + err)
 else: 
     print('--------------------------------------------------------------------------');
     print('Start SNMPTrapReceiver -> {}'.format(datetime.now()));
@@ -63,25 +90,6 @@ else:
     
     # SNMPv1/2c setup
     config.addV1System(snmpEngine, 'my-area', 'public')
-
-    # Callback function for receiving notifications
-    # noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
-    def cbFun(snmpEngine, stateReference, contextEngineId, contextName,
-          varBinds, cbCtx):
-        print('{} : Received new Trap message'.format(datetime.now()));
-        print('{} : Notification from ContextEngineId: {}, ContextName: {}'.format(datetime.now(),contextEngineId.prettyPrint(),
-                                                                        contextName.prettyPrint()))
-        for name, val in varBinds:
-            name_OID=name.prettyPrint()
-            value_OID=val.prettyPrint()    
-            if (OID_reference.get(name.prettyPrint())!=None):
-                name_OID=OID_reference.get(name.prettyPrint())
-            if (OID_reference.get(val.prettyPrint())!=None):
-                value_OID=OID_reference.get(val.prettyPrint())
-            
-            print('{} : Name: {} | Val: {}'.format(datetime.now(),name_OID,value_OID))
-
-        print('--------------------------------------------------------------------------');
 
     # Register SNMP Application at the SNMP engine
     ntfrcv.NotificationReceiver(snmpEngine, cbFun)
@@ -97,3 +105,4 @@ else:
 
 finally:
     print('{} : Finaliza app Auto_SNMPTrapReceiver'.format(datetime.now()))
+    ErrorLog.writeLog('Finaliza app Auto_SNMPTrapReceiver')

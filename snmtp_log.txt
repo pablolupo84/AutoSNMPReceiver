@@ -1,0 +1,3 @@
+2020-04-17 17:24:05.696343:Iniciando Auto_SNMPTrapReceiver
+2020-04-17 17:25:57.203205:Iniciando Auto_SNMPTrapReceiver
+2020-04-17 17:38:13.929976:Iniciando Auto_SNMPTrapReceiver
