@@ -11,27 +11,27 @@ Version: 0.1
 class config:
     """Modulo que permite manejar archivo de configuracion"""    
     def __init__(self,config_file):
-        self.__config_file = config_file
-        self.__config = configparser.ConfigParser()
-        self.__config.read(self.__config_file)  
+        self.config_file = config_file
+        self.config = configparser.ConfigParser()
+        self.config.read(self.config_file)  
         
     def ShowItemSection(self,section):
-        return self.__config.items(section)
+        return self.config.items(section)
     
     def ShowValueItem(self,section,key_word):
-        return self.__config.get(section,key_word)
+        return self.config.get(section,key_word)
     
     def change(self,section,key_word,value):
-        self.__config.set(section,key_word,value)
+        self.config.set(section,key_word,value)
 
     def write(self):
-        self.__config.write(open(self.__config_file,'w'))
+        self.config.write(open(self.config_file,'w'))
 
 # TEST clase_config.py
-#configuracion=config('../config.ini')
-#items=configuracion.ShowItemSection('TRANSPORT_SETUP')
-#print (items)
-# print (configuracion.ShowValueItem('TESTING','DB_NAME'))
-# configuracion.change('TESTING','DB_NAME','Peloncho')
-# print (configuracion.ShowValueItem('TESTING','DB_NAME'))
+# configuracion=config('../config.ini')
+# items=configuracion.ShowItemSection('TRANSPORT_SETUP')
+# print (items)
+# print (configuracion.ShowValueItem('TRANSPORT_SETUP','TrapAgentAddress'))
+# configuracion.change('TRANSPORT_SETUP','TrapAgentAddress','Peloncho')
+# print (configuracion.ShowValueItem('TRANSPORT_SETUP','TrapAgentAddress'))
 # configuracion.write()
