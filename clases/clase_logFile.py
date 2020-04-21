@@ -15,7 +15,6 @@ class logApp:
     def __init__(self,logFile):
         self.logFile = logFile
         self.logApp=open(self.logFile,'a+')
-        print("Apertura o Creacion del Archivo Log de la App")
         self.logApp.close()
 
     def writeLog(self,msgError):
